@@ -1,0 +1,23 @@
+body {
+    background-image: url('../img/fondo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #fff;
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 50px;
+}
+
+
+
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+

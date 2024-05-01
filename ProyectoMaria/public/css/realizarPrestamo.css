@@ -1,0 +1,40 @@
+body{
+    background-image: url('../img/fondo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #000000;
+}
+
+.container {
+
+    margin: 50px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+
+.btn {
+    background-color: #615c51;
+    border-color: #615c51;
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+.container {
+    margin-top: 50px;
+}
