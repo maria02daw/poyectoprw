@@ -1,0 +1,221 @@
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS biblioteca;
+
+-- Usar la base de datos
+USE biblioteca;
+
+-- Tabla Autores
+CREATE TABLE IF NOT EXISTS Autores (
+    ID_Autor INT NOT NULL PRIMARY KEY,
+    Nombre VARCHAR(50),
+    Nacionalidad VARCHAR(50)
+);
+
+-- Tabla Autores_Libros (Tabla intermedia para relación muchos a muchos)
+CREATE TABLE IF NOT EXISTS  Autores_Libros (
+    ID_Autor INT,
+    ID_Libro INT,
+    PRIMARY KEY (ID_Autor, ID_Libro)
+);
+
+-- Tabla Editoriales
+CREATE TABLE IF NOT EXISTS  Editoriales (
+    ID_Editorial INT PRIMARY KEY,
+    Nombre VARCHAR(50)
+);
+
+-- Tabla Generos
+CREATE TABLE IF NOT EXISTS  Generos (
+    ID_Genero INT PRIMARY KEY,
+    Nombre VARCHAR(50)
+);
+
+-- Tabla Estado
+CREATE TABLE IF NOT EXISTS  Estado (
+    ID_Estado INT PRIMARY KEY,
+    Nombre VARCHAR(50)
+);
+
+-- Tabla Libros
+CREATE TABLE IF NOT EXISTS  Libros (
+    ID_Libro INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Titulo VARCHAR(100),
+    ID_Autor INT,
+    ID_Editorial INT,
+    ID_Genero INT,
+    ID_Estado INT,
+    ISBN VARCHAR(13),
+    Portada VARCHAR(255)
+);
+
+-- Tabla Usuarios
+CREATE TABLE IF NOT EXISTS  Usuarios (
+    ID_Usuario INT NOT NULL PRIMARY KEY,
+    Nombre VARCHAR(50),
+    Apellido VARCHAR(50),
+    Email VARCHAR(100)
+);
+
+-- Tabla Acceso_Usuarios
+CREATE TABLE IF NOT EXISTS  Acceso_Usuarios (
+    ID_Acceso INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ID_Usuario INT,
+    Perfil VARCHAR(50),
+    Contraseña VARCHAR(8),
+    Token VARCHAR(100),
+    Fecha DATE,
+    Fecha_Expiracion DATE
+);
+
+-- Tabla Prestamos
+CREATE TABLE IF NOT EXISTS  Prestamos (
+    ID_Prestamo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ID_Usuario INT,
+    ID_Libro INT,
+    Fecha_Prestamo DATE,
+    Fecha_Devolucion_Prevista DATE
+);
+
+-- Tabla Devoluciones
+CREATE TABLE IF NOT EXISTS  Devoluciones (
+    ID_Devolucion INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ID_Prestamo INT,
+    Fecha_Devolucion DATE
+);
+
+-- Claves foraneas
+ALTER TABLE Libros
+    ADD FOREIGN KEY (ID_Autor) REFERENCES Autores(ID_Autor) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD FOREIGN KEY (ID_Editorial) REFERENCES Editoriales(ID_Editorial) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD FOREIGN KEY (ID_Genero) REFERENCES Generos(ID_Genero) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD FOREIGN KEY (ID_Estado) REFERENCES Estado(ID_Estado) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Autores_Libros
+    ADD FOREIGN KEY (ID_Autor) REFERENCES Autores(ID_Autor) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD FOREIGN KEY (ID_Libro) REFERENCES Libros(ID_Libro) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Acceso_Usuarios
+    ADD FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Prestamos
+    ADD FOREIGN KEY (ID_Usuario) REFERENCES Usuarios(ID_Usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD FOREIGN KEY (ID_Libro) REFERENCES Libros(ID_Libro) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE Devoluciones
+    ADD FOREIGN KEY (ID_Prestamo) REFERENCES Prestamos(ID_Prestamo) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Inserción de datos en la tabla Autores
+INSERT IGNORE INTO Autores (ID_Autor, Nombre, Nacionalidad)
+VALUES
+    (1, 'Gabriel García Márquez', 'Colombiana'),
+    (2, 'J.K. Rowling', 'Británica'),
+    (3, 'María Esclapez', 'Española'),
+    (4, 'Gloria Sánchez', 'Española');
+
+-- Inserción de datos en la tabla Editoriales
+INSERT IGNORE INTO Editoriales (ID_Editorial, Nombre)
+VALUES
+    (1, 'DeBolsillo'),
+    (2, 'Salamandra'),
+    (3, 'Plaza&Janes'),
+    (4, 'Espasa-Calpe'),
+    (5, 'Edelvives'),
+    (6, 'Bruguera');
+
+-- Inserción de datos en la tabla Generos
+INSERT IGNORE INTO Generos (ID_Genero, Nombre)
+VALUES
+    (1, 'Ficción'),
+    (2, 'Fantasía'),
+    (3, 'Terror'),
+    (4, 'Poesía'),
+    (5, 'Historia'),
+    (6, 'Infantil'),
+    (7, 'Autoayuda'),
+    (8, 'Novela Romántica');
+    
+-- Inserción de datos en la tabla Estado
+INSERT IGNORE INTO Estado (ID_Estado, Nombre)
+VALUES
+    (1, 'Disponible'),
+    (2, 'Prestado'),
+    (3, 'Perdido'),
+    (4, 'Robado');
+
+-- Inserción de datos en la tabla Libros
+INSERT IGNORE INTO Libros (Titulo, ID_Autor, ID_Editorial, ID_Genero, ID_Estado, ISBN, Portada)
+VALUES
+    ('Cien años de soledad', 1, 1, 1, 1, '1234567890', 'imagen1.jpg'),
+    ('Cien años de soledad', 1, 1, 1, 2, '1234567890', 'imagen1.jpg'),
+    ('Harry Potter y la piedra filosofal', 2, 2, 2, 1, '9876543210', 'imagen2.jpg'),
+    ('Harry Potter y la piedra filosofal', 2, 2, 2, 1, '9876543210', 'imagen2.jpg'),
+    ('Harry Potter y la piedra filosofal', 2, 2, 2, 1, '9876543210', 'imagen2.jpg'),
+    ('Me quiero, Te quiero', 3, 6, 7, 2, '12782372681', 'imagen3.jpg'),
+    ('Me quiero, Te quiero', 3, 6, 7, 1, '12782372681', 'imagen3.jpg'),
+    ('Tú eres tu lugar seguro', 3, 6, 7, 1, '12782372681', 'imagen4.jpg'),
+    ('Tú eres tu lugar seguro', 3, 6, 7, 1, '12782372681', 'imagen4.jpg'),
+    ('Tú eres tu lugar seguro', 3, 6, 7, 1, '12782372681', 'imagen4.jpg'),
+    ('Peluso', 4, 5, 6, 1, '534535435345', 'imagen5.jpg'),
+    ('Peluso', 4, 5, 6, 1, '534535435345', 'imagen5.jpg'),
+    ('Peluso', 4, 5, 6, 1, '534535435345', 'imagen5.jpg');
+    
+
+-- Inserción de datos en la tabla Usuarios
+INSERT IGNORE INTO Usuarios (ID_Usuario, Nombre, Apellido, Email)
+VALUES
+    (1, 'Maria', 'Ortega', 'admin@email.com'),
+    (2, 'Diego', 'Ortega', 'diego@email.com'),
+    (3, 'Juani', 'Gómez', 'juani@email.com'),
+    (4, 'Vanshika', 'Chhabria', 'vanshi@email.com'),
+    (5, 'Luca', 'Betucci', 'luca@email.com'),
+    (6, 'Edgar', 'Millares', 'edgar@email.com'),
+    (7, 'Erik', 'Ramírez', 'erik@email.com'),
+    (8, 'Lucía', 'Arteaga', 'lucia@email.com'),
+    (9, 'Julia', 'Arteaga', 'julia@email.com'),
+    (10, 'May', 'Pérez', 'may@email.com'),
+    (11, 'Jose Carlos', 'Arteaga', 'josecarlos@email.com'),
+    (12, 'Ñita', 'Gómez', 'ñita@email.com'),
+    (13, 'Maricarmen', 'Gómez', 'mari@email.com'),
+    (14, 'Araceli', 'Gómez', 'araceli@email.com'),
+    (15, 'Manuel', 'Carballo', 'carballo@email.com'),
+    (16, 'Leticia', 'Carballo', 'leti@email.com'),
+    (17, 'Romina', 'Carballo', 'romi@email.com'),
+    (18, 'Abril', 'Pérez', 'abril@email.com'),
+    (19, 'Lisbeth', 'Ramírez', 'lis@email.com'),
+    (20, 'Josue', 'Ramírez', 'josu@email.com'),
+    (21, 'Jose', 'Pérez', 'jose@email.com'),
+    (22, 'Elías', 'Pérez', 'elias@email.com'),
+    (23, 'Andrea', 'Capece', 'andri@email.com'),
+    (24, 'Malena', 'Behan', 'malena@email.com'),
+    (25, 'Sebastian', 'Behan', 'seb@email.com'),
+    (26, 'Melina', 'Gómez', 'mel@email.com'),
+    (27, 'Alejandro', 'Gómez', 'ale@email.com'),
+    (28, 'Roque', 'Gómez', 'roque@email.com'),
+    (29, 'Francisco', 'Gómez', 'paco@email.com'),
+    (30, 'Pepe', 'Gómez', 'pepe@email.com'),
+    (31, 'Rosario', 'Pérez', 'rosario@email.com'),
+    (32, 'Sebastian', 'Gómez', 'sebastian@email.com'),
+    (33, 'Milagro', 'Ortega', 'mila@email.com'),
+    (34, 'Yaiza', 'Millares', 'yaiza@email.com'),
+    (35, 'Dácil', 'Millares', 'dacil@email.com'),
+    (36, 'Carmen', 'Sanabria', 'carmita@email.com'),
+    (38, 'Diego', 'Trinidad', 'diegoT@email.com'),
+    (39, 'Miguel Ángel', 'Gómez', 'miguelangel@email.com'),
+    (40, 'Fran', 'Gómez', 'fran@email.com'),
+    (41, 'Miguel', 'Gómez', 'miguel@email.com'),
+    (42, 'Daniel', 'Gómez', 'dani@email.com'),
+    (43, 'Estefan', 'Pérez', 'estefan@email.com'),
+    (44, 'Alejandro', 'Hernandez', 'alejandro@email.com'),
+    (45, 'Edmundo', 'Capece', 'edmundo@email.com'),
+    (46, 'Manolo', 'Millares', 'manolo@email.com');
+    
+-- Inserción de datos en la tabla Acceso_Usuarios
+INSERT IGNORE INTO Acceso_Usuarios (ID_Usuario, Perfil, Contraseña)
+VALUES
+    ( 1, 'Admin', '1234');
+
+-- Inserción de datos en la tabla Prestamos
+INSERT IGNORE INTO Prestamos ( ID_Usuario, ID_Libro, Fecha_Prestamo, Fecha_Devolucion_Prevista)
+VALUES
+    ( 2, 2, '2024-02-19', '2024-03-05'),
+    ( 3, 6, '2024-02-20', '2024-03-10');
